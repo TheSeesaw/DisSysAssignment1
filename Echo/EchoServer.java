@@ -11,7 +11,7 @@ public class EchoServer{
         ServerSocket servSock;
         try {
             // defaults to port 8080
-            servSock = new ServerSocket(8080);
+            servSock = new ServerSocket(Integer.parseInt(args[0]));
 
             while(true){
                 EchoThread eThread;
