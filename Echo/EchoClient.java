@@ -19,7 +19,7 @@ public class EchoClient {
             String consoleInput;
             while ((consoleInput = consoleIn.readLine()) != null) {
                 socketOut.println(consoleInput);
-                System.out.println("echo: " + socketIn.readLine());
+                System.out.println("echo: " + socketIn.readLine() + "\n");
             }
 
 
