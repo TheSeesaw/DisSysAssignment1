@@ -20,6 +20,15 @@ public class P2PChat
     knownPeers[0][2] = knownName;
   }
 
+  //TODO
+  // expected format: [[e1, e2, e3], [e1, e2, e3], [e1, e2, e3]]
+  // where e's are strings
+  // should output an array object containing the same data
+  public static String[][] parseAddressString(String addressString)
+  {
+    return null;
+  }
+
   public static void updateAddresses(String newAddresses)
   {
     return;
