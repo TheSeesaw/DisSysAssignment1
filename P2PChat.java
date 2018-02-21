@@ -8,8 +8,8 @@ import java.net.*;
  */
 public class P2PChat
 {
-  private String[][] knownPeers;
-  private ServerSocket servSock;
+  public String[][] knownPeers;
+  public ServerSocket servSock;
 
   public P2PChat(String knownIP, String knownPort, String knownName)
   {
@@ -99,7 +99,7 @@ public class P2PChat
     String hostName = "localhost";
     int portNumber = 8080;
     String knownIP = "134.114.109.46";
-    String knownPort = "8081";
+    String knownPort = "8080";
     String knownName = "A Friend";
     // initialize known peers with one other address
     P2PChat user = new P2PChat(knownIP, knownPort, knownName);
@@ -109,7 +109,9 @@ public class P2PChat
       // create a server socket
       user.servSock = new ServerSocket(portNumber);
       // listen for connections
-      // TODO: connection thread will be called here
+      ConnectionThread connectThread = new ConnectionThread(user);
+      Thread thread = new Thread(connectThread, "Connection Thread");
+      thread.start();
       // server is now running and listening for connections
       System.out.println("Server started.");
     }
