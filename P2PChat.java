@@ -8,6 +8,16 @@ import java.net.*;
  */
 public class P2PChat
 {
+  private String[][] knownPeers;
+
+  public P2PChat(String knownIP, String knownPort, String knownName)
+  {
+    knownPeers = new String[1][3];
+    knownPeers[0][0] = knownIP;
+    knownPeers[0][1] = knownPort;
+    knownPeers[0][2] = knownName;
+  }
+
   public static int messageDispatch(String messageType, String payload, String[][] addresses)
   {
     int index = 0;
@@ -56,7 +66,7 @@ public class P2PChat
     return null;
   }
 
-  public static boolean handleUserInput(Scanner userIn, String inputStorage, String[][] addresses)
+  public static boolean handleUserInput(Scanner userIn, String inputStorage, P2PChat user)
   {
     System.out.println("Enter a message:");
     inputStorage = userIn.nextLine();
@@ -70,7 +80,7 @@ public class P2PChat
        (messageType.equals("0") || messageType.equals("1") || messageType.equals("2")))
     {
       String payload = inputStorage.substring(2);
-      messageDispatch(messageType, payload, addresses);
+      messageDispatch(messageType, payload, user.knownPeers);
     }
     else
     {
@@ -89,12 +99,10 @@ public class P2PChat
     String hostName = "localhost";
     int portNumber = 8080;
     String knownIP = "134.114.109.46";
-    int knownPort = 8081;
+    String knownPort = "8081";
+    String knownName = "A Friend";
     // initialize known peers with one other address
-    String[][] knownPeers = new String[1][3];
-    knownPeers[0][0] = knownIP;
-    knownPeers[0][1] = Integer.toString(knownPort);
-    knownPeers[0][2] = "A Friend";
+    P2PChat user = new P2PChat(knownIP, knownPort, knownName);
     try
     {
       System.out.println("Starting server . . .");
@@ -118,7 +126,7 @@ public class P2PChat
     System.out.println("Now listening for input. Type quit to exit");
     while(active)
     {
-      active = handleUserInput(userIn, inputStorage, knownPeers);
+      active = handleUserInput(userIn, inputStorage, user);
     }
     System.out.println("Now Exiting . . .");
   }
