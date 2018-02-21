@@ -36,11 +36,15 @@ public class P2PChat
         workingSocket = new Socket(workingAddress,workingPort);
         outgoing = new PrintWriter(workingSocket.getOutputStream(), true);
         // TODO handle other cases
-        outgoing.println(payload);
+        outgoing.println(addresses[index][2] + ": " + payload);
+        System.out.println("Me: " + payload);
       }
-      catch (Exception e)
+      catch (UnknownHostException e)
       {
         System.out.println("Failed to send message");
+      }
+      catch (Exception e){
+        System.out.println("Failed a different way");
       }
     }
     switch(messageType)
@@ -70,7 +74,6 @@ public class P2PChat
 
   public static boolean handleUserInput(Scanner userIn, String inputStorage, P2PChat user)
   {
-    System.out.println("Enter a message:");
     inputStorage = userIn.nextLine();
     if (inputStorage.equals("quit"))
     {
@@ -97,10 +100,10 @@ public class P2PChat
 
     // NOTE: all of these could be set by command line arguments
     String hostName = "localhost";
-    int portNumber = 8080;
-    String knownIP = "134.114.109.46";
-    String knownPort = "8080";
-    String knownName = "A Friend";
+    int portNumber = Integer.parseInt(args[0]);
+    String knownIP = "localhost";
+    String knownPort = args[1];
+    String knownName = args[2];
     // initialize known peers with one other address
     P2PChat user = new P2PChat(knownIP, knownPort, knownName);
     try
