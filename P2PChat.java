@@ -9,9 +9,11 @@ import java.net.*;
 public class P2PChat
 {
   private String[][] knownPeers;
+  private ServerSocket servSock;
 
   public P2PChat(String knownIP, String knownPort, String knownName)
   {
+    servSock = null;
     knownPeers = new String[1][3];
     knownPeers[0][0] = knownIP;
     knownPeers[0][1] = knownPort;
@@ -92,10 +94,8 @@ public class P2PChat
 
   public static void main(String args[]) throws Exception
   {
-    // create a server socket
+
     // NOTE: all of these could be set by command line arguments
-    ServerSocket servSock = null;
-    Socket userSock = null;
     String hostName = "localhost";
     int portNumber = 8080;
     String knownIP = "134.114.109.46";
@@ -106,7 +106,8 @@ public class P2PChat
     try
     {
       System.out.println("Starting server . . .");
-      servSock = new ServerSocket(portNumber);
+      // create a server socket
+      user.servSock = new ServerSocket(portNumber);
       // listen for connections
       // TODO: connection thread will be called here
       // server is now running and listening for connections
