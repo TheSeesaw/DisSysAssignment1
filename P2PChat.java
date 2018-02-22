@@ -1,4 +1,4 @@
-import java.util.Scanner;
+import java.util.*;
 import java.io.*;
 import java.net.*;
 
@@ -8,35 +8,48 @@ import java.net.*;
  */
 public class P2PChat
 {
-  public String[][] knownPeers;
+  // public String[][] knownPeers;
+  public Map<String, String[]> knownPeers;
   public ServerSocket servSock;
 
   public P2PChat(String knownIP, String knownPort, String knownName)
   {
     servSock = null;
-    knownPeers = new String[1][3];
-    knownPeers[0][0] = knownIP;
-    knownPeers[0][1] = knownPort;
-    knownPeers[0][2] = knownName;
+    // knownPeers = new String[1][3];
+    // knownPeers[0][0] = knownIP;
+    // knownPeers[0][1] = knownPort;
+    // knownPeers[0][2] = knownName;
+    knownPeers = new Hashmap<String, String[]>();
+    String[] portName = new String[2];
+    portAndName[0] = knownPort;
+    portAndName[1] = knownName;
+    knownPeers.put(knownIP, portAndName);
   }
 
-  public static int messageDispatch(String messageType, String payload, String[][] addresses)
+  public static int messageDispatch(String messageType, String payload, Dictionary addresses)
   {
-    int index = 0;
+    //int index = 0;
     InetAddress workingAddress = null;
     int workingPort = 0;
     Socket workingSocket = null;
     PrintWriter outgoing = null;
-    for (;index < addresses.length; index++)
+    //for (;index < addresses.length; index++)
+    for (String key : addresses.keySet())
     {
       try
       {
-        workingAddress = InetAddress.getByName(addresses[index][0]);
-        workingPort = Integer.parseInt(addresses[index][1]);
+        // workingAddress = InetAddress.getByName(addresses[index][0]);
+        // workingPort = Integer.parseInt(addresses[index][1]);
+        // workingSocket = new Socket(workingAddress,workingPort);
+        // outgoing = new PrintWriter(workingSocket.getOutputStream(), true);
+        // // TODO handle other cases
+        // outgoing.println(addresses[index][2] + ": " + payload);
+        // System.out.println("Me: " + payload);
+        workingAddress = key;
+        workingPort = Integer.parseInt(addresses.get(key)[0]);
         workingSocket = new Socket(workingAddress,workingPort);
         outgoing = new PrintWriter(workingSocket.getOutputStream(), true);
-        // TODO handle other cases
-        outgoing.println(addresses[index][2] + ": " + payload);
+        outgoing.println(addressess.get(key)[1] + ": " + payload);
         System.out.println("Me: " + payload);
       }
       catch (UnknownHostException e)
