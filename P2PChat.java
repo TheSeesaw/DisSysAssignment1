@@ -26,13 +26,26 @@ public class P2PChat
     knownPeers.put(knownName, portAndName);
   }
 
-  //TODO
-  // expected format: [[e1, e2, e3], [e1, e2, e3], [e1, e2, e3]]
+  // expected format: e1#e2#e3#e1#e2#e3#e1#e2#e3
   // where e's are strings
-  // should output an array object containing the same data
+  // should output an array object containing the same data, ready to be appended
+  // to clien's knownPeers array
   public static String[][] parseAddressString(String addressString)
   {
-    return null;
+    String[] addressItems = addressString.split("#");
+    int fullLength = addressItems.length;
+    String[][] resultAddresses = new String[fullLength / 3][3];
+    int nestIndex = 0;
+    int outerIndex = 0;
+    for (;nestIndex < fullLength; nestIndex+=3)
+    {
+      resultAddresses[outerIndex][nextIndex] = addressItems[nextIndex];
+      resultAddresses[outerIndex][nextIndex+1] = addressItems[nextIndex+1];
+      resultAddresses[outerIndex][nextIndex+2] = addressItems[nextIndex+2];
+      outerIndex++;
+    }
+    System.out.println(resultAddresses); //test
+    return resultAddresses;
   }
 
   public static void updateAddresses(String newAddresses)
