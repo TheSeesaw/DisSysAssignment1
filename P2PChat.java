@@ -33,17 +33,18 @@ public class P2PChat
     int outerIndex = 0;
     for (;nestIndex < fullLength; nestIndex+=3)
     {
-      resultAddresses[outerIndex][nextIndex] = addressItems[nextIndex];
-      resultAddresses[outerIndex][nextIndex+1] = addressItems[nextIndex+1];
-      resultAddresses[outerIndex][nextIndex+2] = addressItems[nextIndex+2];
+      resultAddresses[outerIndex][nestIndex] = addressItems[nestIndex];
+      resultAddresses[outerIndex][nestIndex+1] = addressItems[nestIndex+1];
+      resultAddresses[outerIndex][nestIndex+2] = addressItems[nestIndex+2];
       outerIndex++;
     }
     System.out.println(resultAddresses); //test
     return resultAddresses;
   }
 
-  public static void updateAddresses(String newAddresses)
+  public static void updateAddresses(String[][] newAddresses, P2PChat user)
   {
+    
     return;
   }
 
