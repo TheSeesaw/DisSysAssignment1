@@ -26,7 +26,16 @@ public class P2PChat
   // should output an array object containing the same data
   public static String[][] parseAddressString(String addressString)
   {
-    return null;
+    
+    // I did not implement the nested loop, but here is the gist:  
+    // you can use .split to split the string by specific characters
+      String tempString = addressString;
+      String[] items = sampleString.split("[");
+      List<String> itemList = new ArrayList<String>(Arrays.asList(items));
+    // From here, you can use itemList.add() <-- Here is where you would loop to add the next string to the Array
+      System.out.println(itemList); //test
+    
+    return;
   }
 
   public static void updateAddresses(String newAddresses)
