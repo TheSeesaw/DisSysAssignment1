@@ -20,19 +20,37 @@ public class P2PChat
     // knownPeers[0][1] = knownPort;
     // knownPeers[0][2] = knownName;
     knownPeers = new Hashmap<String, String[]>();
-    String[] portName = new String[2];
-    portAndName[0] = knownPort;
-    portAndName[1] = knownName;
-    knownPeers.put(knownIP, portAndName);
+    String[] address = new String[2];
+    address[0] = knownIP;
+    address[1] = knownPort;
+    knownPeers.put(knownName, portAndName);
   }
 
-  public static int messageDispatch(String messageType, String payload, Dictionary addresses)
+  //TODO
+  // expected format: [[e1, e2, e3], [e1, e2, e3], [e1, e2, e3]]
+  // where e's are strings
+  // should output an array object containing the same data
+  public static String[][] parseAddressString(String addressString)
+  {
+    return null;
+  }
+
+  public static void updateAddresses(String newAddresses)
+  {
+    return;
+  }
+
+  public static void messageDispatch(String messageType, String payload, String[][] addresses)
   {
     //int index = 0;
     InetAddress workingAddress = null;
     int workingPort = 0;
     Socket workingSocket = null;
     PrintWriter outgoing = null;
+    BufferedReader incoming = null;
+    String response = null;
+    boolean terminate = false;
+
     //for (;index < addresses.length; index++)
     for (String key : addresses.keySet())
     {
@@ -45,45 +63,52 @@ public class P2PChat
         // // TODO handle other cases
         // outgoing.println(addresses[index][2] + ": " + payload);
         // System.out.println("Me: " + payload);
-        workingAddress = key;
-        workingPort = Integer.parseInt(addresses.get(key)[0]);
+        workingAddress = Integer.parseInt(addresses.get(key)[0]);
+        workingPort = Integer.parseInt(addresses.get(key)[1]);
         workingSocket = new Socket(workingAddress,workingPort);
         outgoing = new PrintWriter(workingSocket.getOutputStream(), true);
-        outgoing.println(addressess.get(key)[1] + ": " + payload);
-        System.out.println("Me: " + payload);
+        incoming = new BufferedReader(new InputStreamReader(workingSocket.getInputStream()));
+        outgoing.println(messageType + "#" + payload);
+        switch(messageType)
+        {
+          case "0": // connection request
+            System.out.println("Connected to " + key);
+            response = incoming.readLine(); // receive the client's address list
+            // parse and update the address list
+            // TODO, NOTE: should print out addresses added
+            break;
+          case "1": // message
+            System.out.println("Me: " + payload);
+            break;
+          case "2": // disconnection request
+            System.out.println("Disconnected.");
+            terminate = true;
+            break;
+          default:
+            System.out.println("Invalid message, please try again.");
+        }
+        // close the working socket for the next address
+        workingSocket.close();
       }
       catch (UnknownHostException e)
       {
-        System.out.println("Failed to send message");
+        System.out.println("Failed to send message.");
+      }
+      catch (IOException e)
+      {
+        System.out.println("Failed to create writer/reader on socket");
       }
       catch (Exception e){
-        System.out.println("Failed a different way");
+        System.out.println("Failed elsewhere.");
       }
     }
-    switch(messageType)
+    if (terminate)
     {
-      case "0": // connection request
-        break;
-      case "1": // message
-        break;
-      case "2": // disconnection request
-        break;
-      default:
-        System.out.println("Invalid message, please try again.");
+      System.exit(0);
     }
-    return 1;
+    return;
   }
 
-  public static String[] getAddressByName(String[][] addresses, String name)
-  {
-    int index = 0;
-    for (; index < addresses.length; index++)
-    {
-      if (name.equals(addresses[index][2]));
-      return addresses[index];
-    }
-    return null;
-  }
 
   public static boolean handleUserInput(Scanner userIn, String inputStorage, P2PChat user)
   {
@@ -104,7 +129,6 @@ public class P2PChat
     {
       System.out.println("Invalid message, please try again.");
     }
-    //System.out.println(messageType);
     return true;
   }
 
@@ -148,5 +172,6 @@ public class P2PChat
       active = handleUserInput(userIn, inputStorage, user);
     }
     System.out.println("Now Exiting . . .");
+    return;
   }
 }
