@@ -20,22 +20,26 @@ public class P2PChat
     knownPeers[0][2] = knownName;
   }
 
-  //TODO
-  // expected format: [[e1, e2, e3], [e1, e2, e3], [e1, e2, e3]]
+  // expected format: e1#e2#e3#e1#e2#e3#e1#e2#e3
   // where e's are strings
-  // should output an array object containing the same data
+  // should output an array object containing the same data, ready to be appended
+  // to clien's knownPeers array
   public static String[][] parseAddressString(String addressString)
   {
-    
-    // I did not implement the nested loop, but here is the gist:  
-    // you can use .split to split the string by specific characters
-      String tempString = addressString;
-      String[] items = sampleString.split("[");
-      List<String> itemList = new ArrayList<String>(Arrays.asList(items));
-    // From here, you can use itemList.add() <-- Here is where you would loop to add the next string to the Array
-      System.out.println(itemList); //test
-    
-    return;
+    String[] addressItems = addressString.split("#");
+    int fullLength = addressItems.length;
+    String[][] resultAddresses = new String[fullLength / 3][3];
+    int nestIndex = 0;
+    int outerIndex = 0;
+    for (;nestIndex < fullLength; nestIndex+=3)
+    {
+      resultAddresses[outerIndex][nextIndex] = addressItems[nextIndex];
+      resultAddresses[outerIndex][nextIndex+1] = addressItems[nextIndex+1];
+      resultAddresses[outerIndex][nextIndex+2] = addressItems[nextIndex+2];
+      outerIndex++;
+    }
+    System.out.println(resultAddresses); //test
+    return resultAddresses;
   }
 
   public static void updateAddresses(String newAddresses)
