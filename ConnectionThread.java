@@ -62,6 +62,7 @@ public class ConnectionThread implements Runnable {
                   //TODO This need to reflect the new datatype
                     // toClient.println(Arrays.toString(user.knownPeers));
                     user.knownPeers.put(message, address);
+                    //toClient.println("hash");
                   case "1":
                     String name = getKeyByValue(user.knownPeers, address);
                     System.out.println(name + ": " + message);
