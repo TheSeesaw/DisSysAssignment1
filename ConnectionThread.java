@@ -28,6 +28,7 @@ public class ConnectionThread implements Runnable {
     public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
         for (Map.Entry<T, E> entry : map.entrySet()) {
             if (Objects.equals(value, entry.getValue())) {
+              System.out.println(entry.getKey());
                 return entry.getKey();
             }
         }
@@ -39,7 +40,6 @@ public class ConnectionThread implements Runnable {
 
         while(true){
             try{
-                // pass the client socket to the thread
                 Socket peerSock = null;
                 peerSock = user.servSock.accept();
 
@@ -48,6 +48,7 @@ public class ConnectionThread implements Runnable {
 
                 String input = fromClient.readLine();
                 String messageType = input.substring(0,1);
+                System.out.println(messageType);
                 String protocolCheck = input.substring(1,2);
                 String message = input.substring(2);
 
@@ -68,8 +69,9 @@ public class ConnectionThread implements Runnable {
                     user.knownPeers.remove(message);
                     System.out.println(message + " has left the conversation.");
                   default:
-                    System.out.println("Invalid message, please try again.");
+                    System.out.println("uh-oh");
                 }
+                peerSock.close();
               }
               catch (IOException e) {
               System.out.println("Accept failed on port 8080");

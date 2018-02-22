@@ -11,10 +11,12 @@ public class P2PChat
   // public String[][] knownPeers;
   public HashMap<String, String[]> knownPeers;
   public ServerSocket servSock;
+  public String userName;
 
-  public P2PChat(String knownIP, String knownPort, String knownName)
+  public P2PChat(String user, String knownIP, String knownPort, String knownName)
   {
     servSock = null;
+    userName = user;
     // knownPeers = new String[1][3];
     // knownPeers[0][0] = knownIP;
     // knownPeers[0][1] = knownPort;
@@ -30,22 +32,21 @@ public class P2PChat
   // where e's are strings
   // should output an array object containing the same data, ready to be appended
   // to clien's knownPeers array
-  public static String[][] parseAddressString(String addressString)
+  public static void parseAddressString(String addressString, HashMap addressList)
   {
     String[] addressItems = addressString.split("#");
     int fullLength = addressItems.length;
-    String[][] resultAddresses = new String[fullLength / 3][3];
+    //String[][] resultAddresses = new String[fullLength / 3][3];
     int nestIndex = 0;
     int outerIndex = 0;
     for (;nestIndex < fullLength; nestIndex+=3)
     {
-      resultAddresses[outerIndex][nextIndex] = addressItems[nextIndex];
-      resultAddresses[outerIndex][nextIndex+1] = addressItems[nextIndex+1];
-      resultAddresses[outerIndex][nextIndex+2] = addressItems[nextIndex+2];
+      String[] address = new String[2];
+      address[0] = addressItems[nestIndex+1];
+      address[1] = addressItems[nestIndex+2];
+      addressList.put(addressItems[nestIndex], address);
       outerIndex++;
     }
-    System.out.println(resultAddresses); //test
-    return resultAddresses;
   }
 
   public static void updateAddresses(String newAddresses)
@@ -93,6 +94,7 @@ public class P2PChat
             System.out.println("Connected to " + key);
             response = incoming.readLine(); // receive the client's address list
             // parse and update the address list
+            parseAddressString(response, addresses);
             // TODO, NOTE: should print out addresses added
             break;
           case "1": // message
@@ -128,39 +130,44 @@ public class P2PChat
   }
 
 
-  public static boolean handleUserInput(Scanner userIn, String inputStorage, P2PChat user)
+  public static boolean handleUserInput(String userName, Scanner userIn, String inputStorage, P2PChat user)
   {
     inputStorage = userIn.nextLine();
-    if (inputStorage.equals("quit"))
+    if (!inputStorage.equals("quit"))
     {
-      return false; // exit case
-    }
-    String messageType = inputStorage.substring(0,1);
-    String protocolCheck = inputStorage.substring(1,2);
-    if (protocolCheck.equals("#") &&
-       (messageType.equals("0") || messageType.equals("1") || messageType.equals("2")))
-    {
-      String payload = inputStorage.substring(2);
-      messageDispatch(messageType, payload, user.knownPeers);
+      messageDispatch("1", inputStorage, user.knownPeers);
     }
     else
     {
-      System.out.println("Invalid message, please try again.");
+      messageDispatch("2", user.userName, user.knownPeers);
     }
+    // String messageType = inputStorage.substring(0,1);
+    // String protocolCheck = inputStorage.substring(1,2);
+    // if (protocolCheck.equals("#") &&
+    //    (messageType.equals("0") || messageType.equals("1") || messageType.equals("2")))
+    // {
+    //   String payload = inputStorage.substring(2);
+    //   messageDispatch(messageType, payload, user.knownPeers);
+    // }
+    // else
+    // {
+    //   System.out.println("Invalid message, please try again.");
+    // }
     return true;
   }
 
   public static void main(String args[]) throws Exception
   {
 
-    // NOTE: all of these could be set by command line arguments
+    String userName = args[0];
     String hostName = "localhost";
-    int portNumber = Integer.parseInt(args[0]);
+    int portNumber = Integer.parseInt(args[1]);
     String knownIP = "localhost";
-    String knownPort = args[1];
     String knownName = args[2];
+    String knownPort = args[3];
+
     // initialize known peers with one other address
-    P2PChat user = new P2PChat(knownIP, knownPort, knownName);
+    P2PChat user = new P2PChat(userName, knownIP, knownPort, knownName);
     try
     {
       System.out.println("Starting server . . .");
@@ -187,7 +194,7 @@ public class P2PChat
     System.out.println("Now listening for input. Type quit to exit");
     while(active)
     {
-      active = handleUserInput(userIn, inputStorage, user);
+      active = handleUserInput(userName, userIn, inputStorage, user);
     }
     System.out.println("Now Exiting . . .");
     return;
