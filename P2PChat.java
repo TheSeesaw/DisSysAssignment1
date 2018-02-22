@@ -41,6 +41,7 @@ public class P2PChat
     int outerIndex = 0;
     for (;nestIndex < fullLength; nestIndex+=3)
     {
+      System.out.println("DEBUG: addressItems[nestIndex]");
       String[] address = new String[2];
       address[0] = addressItems[nestIndex+1];
       address[1] = addressItems[nestIndex+2];
@@ -49,10 +50,6 @@ public class P2PChat
     }
   }
 
-  public static void updateAddresses(String newAddresses)
-  {
-    return;
-  }
 
   public static void messageDispatch(String messageType, String payload, HashMap addresses)
   {
@@ -130,10 +127,13 @@ public class P2PChat
   }
 
 
-  public static boolean handleUserInput(String userName, Scanner userIn, String inputStorage, P2PChat user)
+  public static boolean handleUserInput(String userName, String inputStorage, P2PChat user)
   {
-    inputStorage = userIn.nextLine();
-    if (!inputStorage.equals("quit"))
+    if (inputStorage.equals("connectMyServer"))
+    {
+      messageDispatch("0", user.userName, user.knownPeers);
+    }
+    else if (!inputStorage.equals("quit"))
     {
       messageDispatch("1", inputStorage, user.knownPeers);
     }
@@ -173,6 +173,11 @@ public class P2PChat
       System.out.println("Starting server . . .");
       // create a server socket
       user.servSock = new ServerSocket(portNumber);
+      if (!handleUserInput(userName, "connectMyServer", user))
+      {
+        System.out.println("Unable to establish a connection");
+        return;
+      }
       // listen for connections
       ConnectionThread connectThread = new ConnectionThread(user);
       Thread thread = new Thread(connectThread, "Connection Thread");
@@ -194,7 +199,8 @@ public class P2PChat
     System.out.println("Now listening for input. Type quit to exit");
     while(active)
     {
-      active = handleUserInput(userName, userIn, inputStorage, user);
+      inputStorage = userIn.nextLine();
+      active = handleUserInput(userName, inputStorage, user);
     }
     System.out.println("Now Exiting . . .");
     return;
